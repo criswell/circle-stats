@@ -1,0 +1,9 @@
+# Python installation requirements
+# ================================
+#
+# This file is meant to be consumed by pip
+#
+#     pip install -r requirements.txt
+#
+Jinja2
+git-circle
