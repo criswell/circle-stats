@@ -94,7 +94,6 @@ for repo in config['repos']:
         sys.exit(1)
 
     hash_id = hashlib.md5(repo['path']).hexdigest()
-    # First, we get all branches
     git_cmd = "git -C {0} circle list-builds -ar -m --date={1}".format(
             repo['path'], date_limit)
     output = subprocess.Popen(git_cmd.split(),
