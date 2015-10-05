@@ -12,10 +12,15 @@ import csv
 import json
 import argparse
 import hashlib
-import sqlite3
+from dateutil.parser import parse
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from data_models import Base, Job
 
 parser = argparse.ArgumentParser()
 parser.add_argument("config", help="The JSON config file to load.")
+parser.add_argument("-v", "--verbose", help="Run verbosely",
+        action="store_true")
 args = parser.parse_args()
 
 config = {}
@@ -23,12 +28,13 @@ config = {}
 with open(args.config, 'r') as f:
     config = json.load(f)
 
-if not config.has_key('repos') or not config.has_key('data-file'):
+if not config.has_key('repos') or not config.has_key('database-url'):
     print("Error parsing data file!")
     print(config)
     sys.exit(1)
 
 date_offset = datetime.timedelta()
+zero_offset = datetime.timedelta()
 
 if config.has_key('date-offset'):
     do = config['date-offset']
@@ -43,12 +49,43 @@ if config.has_key('date-offset'):
             microseconds=microseconds, milliseconds=milliseconds,
             minutes=minutes, hours=hours, weeks=weeks)
 
-date_limit = str(datetime.date.today() + date_offset)
+if date_offset == zero_offset:
+    query_date = datetime.date.today()
+else:
+    if config.get('weekdays-only', False):
+        query_date = datetime.date.today() + date_offset
+        while query_date.weekday() == 5 or query_date.weekday() == 6:
+            query_date = query_date + date_offset
 
-conn = sqlite3.connect(config['data-file'])
+date_limit = str(query_date)
+
+engine = create_engine(config['database-url'])
+Session = sessionmaker()
+Session.configure(bind=engine)
+session = Session()
+
+def log(line):
+    if args.verbose:
+        print(line)
+
+def process_build(row):
+    branch = row[1]
+    build_number = row[2]
+    status = row[4]
+    outcome = row[5]
+    build_time = row[11]
+    start_time = parse(row[12]).date()
+    if session.query(Job).filter(Job.build_number == build_number).count() < 1:
+        log("{0}:{1}, {2}:{3}, {4} - {5}".format(branch, build_number, status,
+            outcome, start_time, build_time))
+        j = Job(build_number=build_number, branch=branch, status=status,
+                outcome=outcome, build_time=build_time, start_time=start_time)
+        session.add(j)
+    session.commit()
 
 def process_row(row):
-    pass
+    if row[0] == 'BUILD':
+        process_build(row)
 
 for repo in config['repos']:
     if not repo.has_key('path') or not repo.has_key('highlight-branches'):

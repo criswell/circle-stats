@@ -4,14 +4,14 @@
 
 from __future__ import print_function
 import sys
+import os
 import os.path
 import json
 import argparse
-import sqlite3
+from data_models import Base
 
 parser = argparse.ArgumentParser()
 parser.add_argument("config", help="The JSON config file to load.")
-parser.add_argument("-f", "--force", help="Force re-init", action="store_true")
 args = parser.parse_args()
 
 config = {}
@@ -19,16 +19,16 @@ config = {}
 with open(args.config, 'r') as f:
     config = json.load(f)
 
-if not config.has_key('data-file'):
-    print("Error! No 'data-file' setting in config!")
+if not config.has_key('database-url'):
+    print("Error! No 'database-url' setting in config!")
     print(config)
     sys.exit(1)
 
-if os.path.isfile(config['data-file']):
-    if args.force:
-        print("DB file found, forcing re-init!")
+from sqlalchemy import create_engine
+engine = create_engine(config['database-url'])
 
+from sqlalchemy.orm import sessionmaker
+session = sessionmaker()
+session.configure(bind=engine)
+Base.metadata.create_all(engine)
 
-conn = sqlite3.connect(config['data-file'])
-
-# Create the DB schema
