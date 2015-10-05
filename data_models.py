@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Date
+from sqlalchemy import Column, Integer, String, Date, Boolean
 
 Base = declarative_base()
 
@@ -10,6 +10,7 @@ class Job(Base):
 
     __tablename__ = "jobs"
     id = Column(Integer, primary_key=True)
+    repo_hash = Column(String, index=True)
     build_number = Column(Integer)
     branch = Column(String, index=True)
     status = Column(String, index=True)

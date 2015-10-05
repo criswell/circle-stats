@@ -5,7 +5,6 @@
 
 from __future__ import print_function
 import sys
-#import os
 import subprocess
 import datetime
 import csv
@@ -68,7 +67,7 @@ def log(line):
     if args.verbose:
         print(line)
 
-def process_build(row):
+def process_build(hash_id, row):
     branch = row[1]
     build_number = row[2]
     status = row[4]
@@ -79,13 +78,14 @@ def process_build(row):
         log("{0}:{1}, {2}:{3}, {4} - {5}".format(branch, build_number, status,
             outcome, start_time, build_time))
         j = Job(build_number=build_number, branch=branch, status=status,
-                outcome=outcome, build_time=build_time, start_time=start_time)
+                outcome=outcome, build_time=build_time, start_time=start_time,
+                repo_hash=hash_id)
         session.add(j)
     session.commit()
 
-def process_row(row):
+def process_row(hash_id, row):
     if row[0] == 'BUILD':
-        process_build(row)
+        process_build(hash_id, row)
 
 for repo in config['repos']:
     if not repo.has_key('path') or not repo.has_key('highlight-branches'):
@@ -99,5 +99,5 @@ for repo in config['repos']:
     output = subprocess.Popen(git_cmd.split(),
             stdout=subprocess.PIPE).communicate()[0].decode('ascii')
     for row in csv.reader(output.splitlines(), delimiter=','):
-        process_row(row)
+        process_row(hash_id, row)
 
