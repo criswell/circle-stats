@@ -20,6 +20,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("config", help="The JSON config file to load.")
 parser.add_argument("-v", "--verbose", help="Run verbosely",
         action="store_true")
+parser.add_argument("-m", "--max", help="Ignore date restriction, instead " +
+        "parse the last 100 jobs (the max) for each branch",
+        action="store_true")
 args = parser.parse_args()
 
 config = {}
@@ -96,6 +99,9 @@ for repo in config['repos']:
     hash_id = hashlib.md5(repo['path']).hexdigest()
     git_cmd = "git -C {0} circle list-builds -ar -m --date={1}".format(
             repo['path'], date_limit)
+    if args.max:
+        git_cmd = "git -C {0} circle list-builds -ar -m --limit 100".format(
+            repo['path'])
     output = subprocess.Popen(git_cmd.split(),
             stdout=subprocess.PIPE).communicate()[0].decode('ascii')
     for row in csv.reader(output.splitlines(), delimiter=','):
