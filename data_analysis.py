@@ -34,6 +34,10 @@ class DataAnalysis:
             outcomes : a tuple of the outcomes we're interested in
             branch : the branch to restrict to (if None, will use all branches)
             exclude_weekends : if True, will exclude weekends from results
+
+        Returns:
+            data : A Data object. data.data is an unsorted dictionary of
+                   'day'=>'average', where average is in minutes.
         """
         running_joke = self._session.query(Job).filter(Job.repo_hash == hash_id)
         today = datetime.date.today().strftime("%Y-%m-%d")
@@ -65,7 +69,8 @@ class DataAnalysis:
             num_iter = num_iter + 1
 
         for key in daily_avg_total.keys():
-            data.data[key] = daily_avg_total[key] / daily_num_iter[key]
+            data.data[key] = \
+                (daily_avg_total[key] / daily_num_iter[key]) / 0.000016667
 
         data.average = avg_total / num_iter
         return data
