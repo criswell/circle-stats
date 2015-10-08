@@ -7,6 +7,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from data_models import Base, Job
 
+class Data:
+    def __init__(self, hash_id):
+        self.hash_id = hash_id
+        self.data = {}
+        self.average = None
+
 class DataAnalysis:
     def __init__(self, db_url):
         """Initialize DataAnalysis object.
@@ -40,6 +46,27 @@ class DataAnalysis:
             running_joke = running_joke.filter(Job.branch == branch)
 
         results = running_joke.all()
+        data = Data(hash_id)
+        avg_total = 0
+        num_iter = 0
+        daily_avg_total = {}
+        daily_num_iter = {}
         for result in results:
-            print result
+            if not daily_avg_total.has_key(result.start_time):
+                daily_avg_total[result.start_time] = 0
+            if not daily_num_iter.has_key(result.start_time):
+                daily_num_iter[result.start_time] = 0
+
+            daily_num_iter[result.start_time] = \
+                    daily_num_iter[result.start_time] + 1
+            daily_avg_total[result.start_time] = \
+                    daily_avg_total[result.start_time] + result.build_time
+            avg_total = avg_total + result.build_time
+            num_iter = num_iter + 1
+
+        for key in daily_avg_total.keys():
+            data.data[key] = daily_avg_total[key] / daily_num_iter[key]
+
+        data.average = avg_total / num_iter
+        return data
 

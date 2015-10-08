@@ -27,7 +27,12 @@ weekdays_only = config['weekdays-only']
 
 for repo in config['repos']:
     hash_id = hashlib.md5(repo['path']).hexdigest()
-    outcomes =
 
-    da.compute_averages(hash_id, num_days, outcomes, None, weekdays_only)
+    d = da.compute_averages(hash_id, num_days, outcomes, None, weekdays_only)
+    days = sorted(d.data.keys())
+    for i in days:
+        print(">{0}:{1}".format(i,d.data[i]))
+    print("-----{0}".format(d.average))
+    print("-----{0}".format(len(d.data)))
+    print("max_days: {0}\tweekdays_only: {1}".format(num_days, weekdays_only))
 
