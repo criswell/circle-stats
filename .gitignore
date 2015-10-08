@@ -14,3 +14,4 @@ fake-eggs
 parts
 dist
 work-config.json
+output/

@@ -21,18 +21,35 @@ db_url = config['database-url']
 
 da = DataAnalysis(db_url)
 
-num_days = config['max_days']
+num_days = config['max-days']
 outcomes = ['success']
 weekdays_only = config['weekdays-only']
+
+def display(data):
+    pre = data.branch
+    if pre is None:
+        pre = ''
+
+    days = sorted(data.data.keys())
+    for i in days:
+         print("{0}>{1}:{2}".format(pre, i,data.data[i]))
+    print("{0}-----{1}".format(pre, data.average))
+    print("{0}-----{1}".format(pre, len(data.data)))
 
 for repo in config['repos']:
     hash_id = hashlib.md5(repo['path']).hexdigest()
 
-    d = da.compute_averages(hash_id, num_days, outcomes, None, weekdays_only)
-    days = sorted(d.data.keys())
-    for i in days:
-        print(">{0}:{1}".format(i,d.data[i]))
-    print("-----{0}".format(d.average))
-    print("-----{0}".format(len(d.data)))
-    print("max_days: {0}\tweekdays_only: {1}".format(num_days, weekdays_only))
+    d = []
+    d.append(da.compute_averages(hash_id, num_days, outcomes, None,
+        weekdays_only))
+    #display(None, dall)
+    for branch in repo['highlight-branches']:
+        d.append(da.compute_averages(hash_id, num_days, outcomes,
+            branch, weekdays_only))
+        #d = da.pad_missing_days([d, dall])
+        #display(branch, d)
+    d = da.pad_missing_days(d)
+    for i in d:
+        display(i)
 
+    print("max_days: {0}\tweekdays_only: {1}".format(num_days, weekdays_only))

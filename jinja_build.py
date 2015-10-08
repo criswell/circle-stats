@@ -9,6 +9,7 @@ import datetime
 import os
 import json
 import hashlib
+from data_analysis import DataAnalysis
 try:
     from jinja2 import Template
     from jinja2 import FileSystemLoader
@@ -55,12 +56,31 @@ if not config.has_key('repos'):
     print(config)
     sys.exit(1)
 
+if not config.has_key('database-url'):
+    print("Error parsing config file! Missing 'database-url'!")
+    print(config)
+    sys.exit(1)
+
+num_days = config.get('max-days', 30) # Default to 30 past days
+weekdays_only = config.get('weekdays-only', True)
+
+da = DataAnalysis(config['database-url'])
+
 for repo in config['repos']:
     page_title = repo.get('title', '').format(date=datetime.datetime.now())
     hash_id = hashlib.md5(repo['path']).hexdigest()
 
-    template = env.from_string(strTemplate)
-    rendered = template.render(page_title=page_title)
+    d = da.compute_averages(hash_id, num_days, ['success'], None,
+            weekdays_only)
 
-    print(rendered)
+    bdata = {}
+    for branch in repo['highlight-branches']:
+        bdata[branch] = da.compute_averages(hash_id, num_days, ['success'],
+                branch, weekdays_only)
+
+    template = env.from_string(strTemplate)
+    rendered = template.render(page_title=page_title, data=d, bdata=bdata)
+
+    with open('{0}/{1}.html'.format(output_dir, hash_id), 'w') as f:
+        f.write(rendered)
 

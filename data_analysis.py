@@ -10,8 +10,9 @@ from data_models import Base, Job
 MILLI_TO_MINUTES = 0.000016667
 
 class Data:
-    def __init__(self, hash_id):
+    def __init__(self, hash_id, branch):
         self.hash_id = hash_id
+        self.branch = branch
         self.data = {}
         self.average = None
 
@@ -52,7 +53,7 @@ class DataAnalysis:
             running_joke = running_joke.filter(Job.branch == branch)
 
         results = running_joke.all()
-        data = Data(hash_id)
+        data = Data(hash_id, branch)
         avg_total = 0
         num_iter = 0
         daily_avg_total = {}
@@ -77,3 +78,25 @@ class DataAnalysis:
         data.average = (avg_total / num_iter) * MILLI_TO_MINUTES
         return data
 
+    def pad_missing_days(self, datasets):
+        """Given a list of datasets, pad out missing days. Return list of
+        datasets with all days present"""
+        days = []
+        for dataset in datasets:
+            for key in dataset.data.keys():
+                if key not in days:
+                    days.append(key)
+
+        new_datasets = []
+
+        for s in datasets:
+            print s.data.keys()
+            print days
+            missing = list(set(s.data.keys()) - set(days))
+            print(missing)
+            #import pdb; pdb.set_trace()
+            for m in missing:
+                s.data[m] = 0
+            new_datasets.append(s)
+
+        return new_datasets
