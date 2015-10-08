@@ -7,6 +7,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from data_models import Base, Job
 
+MILLI_TO_MINUTES = 0.000016667
+
 class Data:
     def __init__(self, hash_id):
         self.hash_id = hash_id
@@ -70,8 +72,8 @@ class DataAnalysis:
 
         for key in daily_avg_total.keys():
             data.data[key] = \
-                (daily_avg_total[key] / daily_num_iter[key]) / 0.000016667
+                (daily_avg_total[key] / daily_num_iter[key]) * MILLI_TO_MINUTES
 
-        data.average = avg_total / num_iter
+        data.average = (avg_total / num_iter) * MILLI_TO_MINUTES
         return data
 
