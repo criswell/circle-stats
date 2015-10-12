@@ -42,12 +42,9 @@ for repo in config['repos']:
     d = []
     d.append(da.compute_averages(hash_id, num_days, outcomes, None,
         weekdays_only))
-    #display(None, dall)
     for branch in repo['highlight-branches']:
         d.append(da.compute_averages(hash_id, num_days, outcomes,
             branch, weekdays_only))
-        #d = da.pad_missing_days([d, dall])
-        #display(branch, d)
     d = da.pad_missing_days(d)
     for i in d:
         display(i)

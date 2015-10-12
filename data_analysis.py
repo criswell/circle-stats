@@ -90,11 +90,7 @@ class DataAnalysis:
         new_datasets = []
 
         for s in datasets:
-            print s.data.keys()
-            print days
-            missing = list(set(s.data.keys()) - set(days))
-            print(missing)
-            #import pdb; pdb.set_trace()
+            missing = list(set(days) - set(s.data.keys()))
             for m in missing:
                 s.data[m] = 0
             new_datasets.append(s)
