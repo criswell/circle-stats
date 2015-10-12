@@ -5,7 +5,7 @@
 {% for d in data %}
 // Context("{{ d.id }}")
 var ctx_{{ d.id }} = document.getElementById("{{ d.id }}").getContext("2d");
-ctx_{{ d.id }}.canvas.width = window.innerWidth / 3;
+ctx_{{ d.id }}.canvas.width = window.innerWidth / 2.5;
 ctx_{{ d.id }}.canvas.height = window.innerHeight / 3;
 
 var data_{{ d.id }} = {
@@ -38,12 +38,17 @@ var data_{{ d.id }} = {
         {{ item[1] }},
       {% endfor %}
         ]
-    }
+    },
   {% endfor %}
   ]
 };
 
+{% if d.chart_type is equalto "bar" %}
 var chart_{{ d.id }} = new Chart(ctx_{{ d.id }}).Bar(data_{{ d.id }});
+{% else %}
+// Defaults to Line
+var chart_{{ d.id }} = new Chart(ctx_{{ d.id }}).Line(data_{{ d.id }});
+{% endif %}
 
 Chart.defaults.global.responsive = true;
 
