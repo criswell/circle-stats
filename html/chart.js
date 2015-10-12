@@ -7,36 +7,36 @@ ctx.canvas.height = window.innerHeight;
 // Data definition
 var data = {
   labels: [
-  {% for item in data.data|dictsort %}
+  {% for item in data[0].data|dictsort %}
     "{{ item[0] }}",
   {% endfor %}
     ],
   datasets: [
+  {% for d in data %}
     {
+      {% if d.branch is none %}
       label: "All Branches",
-      fillColor: "rgba(220,220,220,0.5)",
-      strokeColor: "rgba(220,220,220,0.8)",
-      highlightFill: "rgba(220,220,220,0.75)",
-      highlightStroke: "rgba(220,220,220,1)",
+      {% else %}
+      label: "{{ d.branch }}",
+      {% endif %}
+
+      {% if colors[d.branch] %}
+      fillColor: "rgba({{ colors[d.branch][0] }},{{ colors[d.branch][1] }},{{ colors[d.branch][2] }},0.5)",
+      strokeColor: "rgba({{ colors[d.branch][0] }},{{ colors[d.branch][1] }},{{ colors[d.branch][2] }},0.8)",
+      highlightFill: "rgba({{ colors[d.branch][0] }},{{ colors[d.branch][1] }},{{ colors[d.branch][2] }},0.75)",
+      highlightStroke: "rgba({{ colors[d.branch][0] }},{{ colors[d.branch][1] }},{{ colors[d.branch][2] }},1)",
+      {% else %}
+      fillColor: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},0.5)",
+      strokeColor: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},0.8)",
+      highlightFill: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},0.75)",
+      highlightStroke: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},1)",
+      {% endif %}
       data: [
-      {% for item in data.data|dictsort %}
+      {% for item in d.data|dictsort %}
         {{ item[1] }},
       {% endfor %}
         ]
     },
-    {% for b in bdata|dictsort %}
-      {
-        label: "{{ b[0] }}",
-        fillColor: "rgba(151,187,205,0.5)",
-        strokeColor: "rgba(151,187,205,0.8)",
-        highlightFill: "rgba(151,187,205,0.75)",
-        highlightStroke: "rgba(151,187,205,1)",
-        data: [
-        {% for item in b[1].data|dictsort %}
-          {{ item[1] }},
-        {% endfor %}
-          ]
-      },
     {% endfor %}
     ]
 };

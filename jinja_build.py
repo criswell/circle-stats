@@ -70,16 +70,19 @@ for repo in config['repos']:
     page_title = repo.get('title', '').format(date=datetime.datetime.now())
     hash_id = hashlib.md5(repo['path']).hexdigest()
 
-    d = da.compute_averages(hash_id, num_days, ['success'], None,
-            weekdays_only)
+    d = []
+    d.append(da.compute_averages(hash_id, num_days, ['success'], None,
+            weekdays_only))
 
-    bdata = {}
     for branch in repo['highlight-branches']:
-        bdata[branch] = da.compute_averages(hash_id, num_days, ['success'],
-                branch, weekdays_only)
+        d.append(da.compute_averages(hash_id, num_days, ['success'],
+                branch, weekdays_only))
 
+    d = da.pad_missing_days(d)
+
+    colors = repo.get('colors', { "" : [ 220, 220, 220 ] })
     template = env.from_string(strTemplate)
-    rendered = template.render(page_title=page_title, data=d, bdata=bdata)
+    rendered = template.render(page_title=page_title, data=d, colors=colors)
 
     with open('{0}/{1}.html'.format(output_dir, hash_id), 'w') as f:
         f.write(rendered)
