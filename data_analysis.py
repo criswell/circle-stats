@@ -14,7 +14,9 @@ class Data:
         self.hash_id = hash_id
         self.branch = branch
         self.data = {}
-        self.average = None
+        self.data_type = None
+        self.chart_type = None
+        self.duration = None
 
 class DataAnalysis:
     def __init__(self, db_url):
@@ -54,6 +56,8 @@ class DataAnalysis:
 
         results = running_joke.all()
         data = Data(hash_id, branch)
+        data.data_type = "average"
+        data.duration = num_days
         avg_total = 0
         num_iter = 0
         daily_avg_total = {}
@@ -75,7 +79,7 @@ class DataAnalysis:
             data.data[key] = \
                 (daily_avg_total[key] / daily_num_iter[key]) * MILLI_TO_MINUTES
 
-        data.average = (avg_total / num_iter) * MILLI_TO_MINUTES
+        #data.average = (avg_total / num_iter) * MILLI_TO_MINUTES
         return data
 
     def pad_missing_days(self, datasets):

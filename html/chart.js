@@ -1,11 +1,16 @@
-// Get the context of the canvas element we want to select
-var ctx = document.getElementById("myChart").getContext("2d");
+// Get the contexts for each of the canvases
+var sevenDayTimeAverage = document.getElementById(
+    "sevenDayTimeAverage").getContext("2d");
+var thirtyDayTimeAverage = document.getElementById(
+    "thirtyDayTimeAverage").getContext("2d");
 
-ctx.canvas.width = window.innerWidth;
-ctx.canvas.height = window.innerHeight;
+sevenDayTimeAverage.canvas.width = window.innerWidth / 3;
+sevenDayTimeAverage.canvas.height = window.innerHeight / 3;
+thirtyDayTimeAverage.canvas.width = window.innerWidth / 3;
+thirtyDayTimeAverage.canvas.width = window.innerHeight / 3;
 
 // Data definition
-var data = {
+var sevenDayTimeAverage_data = {
   labels: [
   {% for item in data[0].data|dictsort %}
     "{{ item[0] }}",
@@ -41,7 +46,8 @@ var data = {
     ]
 };
 
-var myNewChart = new Chart(ctx).Bar(data);
+var sevenDayTimeAverage_chart = new Chart(
+    sevenDayTimeAverage).Bar(sevenDayTimeAverage_data);
 
 Chart.defaults.global.responsive = true;
 
