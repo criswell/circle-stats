@@ -15,7 +15,6 @@ class Data:
         self.branch = branch
         self.data = {}
         self.data_type = None
-        self.chart_type = None
         self.duration = None
 
 class DataAnalysis:

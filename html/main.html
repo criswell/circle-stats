@@ -1,6 +1,7 @@
 <div class="container">
   <ul class="list-centered">
-    <li><canvas id="sevenDayTimeAverage"></canvas></li>
-    <li><canvas id="maxDayTimeAverage"></canvas></li>
+    {% for d in data %}
+    <li><canvas id="{{ d.id }}"></canvas><br />{{ d.label }}</li>
+    {% endfor %}
   </ul>
 </div>

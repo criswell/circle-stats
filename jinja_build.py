@@ -61,7 +61,7 @@ if not config.has_key('database-url'):
     print(config)
     sys.exit(1)
 
-num_days = config.get('max-days', 30) # Default to 30 past days
+#num_days = config.get('max-days', 30) # Default to 30 past days
 weekdays_only = config.get('weekdays-only', True)
 
 da = DataAnalysis(config['database-url'])
@@ -70,20 +70,31 @@ for repo in config['repos']:
     page_title = repo.get('title', '').format(date=datetime.datetime.now())
     hash_id = hashlib.md5(repo['path']).hexdigest()
 
-    # Compute averages
-    d_max = []
-    d_max.append(da.compute_averages(hash_id, num_days, ['success'], None,
+    data = []
+
+    for chart in config['charts']:
+        num_days = chart['duration']
+        d = []
+
+        # Compute averages
+        d.append(da.compute_averages(hash_id, num_days, ['success'], None,
             weekdays_only))
 
-    for branch in repo['highlight-branches']:
-        d_max.append(da.compute_averages(hash_id, num_days, ['success'],
+        for branch in repo['highlight-branches']:
+            d.append(da.compute_averages(hash_id, num_days, ['success'],
                 branch, weekdays_only))
 
-    d_max = da.pad_missing_days(d_max)
+        d = da.pad_missing_days(d)
+        data.append({
+                "label" : chart['label'],
+                "id" : hashlib.md5(chart['label']).hexdigest(),
+                "chart_type" : chart['chart-type'],
+                'data' : d
+                })
 
     colors = repo.get('colors', { "" : [ 220, 220, 220 ] })
     template = env.from_string(strTemplate)
-    rendered = template.render(page_title=page_title, data_max=d_max, colors=colors)
+    rendered = template.render(page_title=page_title, data=data, colors=colors)
 
     with open('{0}/{1}.html'.format(output_dir, hash_id), 'w') as f:
         f.write(rendered)

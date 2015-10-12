@@ -1,10 +1,23 @@
 // Get the contexts for each of the canvases
-var sevenDayTimeAverage = document.getElementById(
-    "sevenDayTimeAverage").getContext("2d");
-var thirtyDayTimeAverage = document.getElementById(
-    "thirtyDayTimeAverage").getContext("2d");
 
-sevenDayTimeAverage.canvas.width = window.innerWidth / 3;
+{% for d in data %}
+// Context("{{ d.id }}")
+var ctx_{{ d.id }} = document.getElementById("{{ d.id }}").getContext("2d");
+ctx_{{ d.id }}.canvas.width = window.innerWidth / 3;
+ctx_{{ d.id }}.canvas.height = window.innerHeight / 3;
+
+var data_{{ d.id }} = {
+  labels: [
+  {% for item in d.data[0].data|dictsort %}
+    "{{ item[0] }}",
+  {% endfor %}
+    ],
+};
+
+{% endfor %}
+
+{#
+/* sevenDayTimeAverage.canvas.width = window.innerWidth / 3;
 sevenDayTimeAverage.canvas.height = window.innerHeight / 3;
 thirtyDayTimeAverage.canvas.width = window.innerWidth / 3;
 thirtyDayTimeAverage.canvas.width = window.innerHeight / 3;
@@ -50,4 +63,5 @@ var sevenDayTimeAverage_chart = new Chart(
     sevenDayTimeAverage).Bar(sevenDayTimeAverage_data);
 
 Chart.defaults.global.responsive = true;
-
+*/
+#}
