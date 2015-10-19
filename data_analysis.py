@@ -17,6 +17,21 @@ class Data:
         self.data_type = None
         self.duration = None
 
+
+
+def date__business_days(from_date, add_days,holidays):
+    business_days_to_add = add_days
+    current_date = from_date
+    while business_days_to_add > 0:
+        current_date += datetime.timedelta(days=1)
+        weekday = current_date.weekday()
+        if weekday >= 5: # sunday = 6
+            continue
+        if current_date in holidays:
+            continue
+        business_days_to_add -= 1
+    return current_date
+
 class DataAnalysis:
     def __init__(self, db_url):
         """Initialize DataAnalysis object.
