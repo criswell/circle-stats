@@ -81,7 +81,9 @@ class DataAnalysis:
         """
         running_joke = self._session.query(Job).filter(Job.repo_hash == hash_id)
         today = datetime.date.today().strftime("%Y-%m-%d")
-        days_delta = datetime.timedelta(days=num_days)
+        (actual_days_back, excluded_days) = dateback_from_business_days(
+                datetime.date.today(), num_days)
+        days_delta = datetime.timedelta(days=actual_days_back)
         start_day = (datetime.date.today() - days_delta).strftime("%Y-%m-%d")
         running_joke = running_joke.filter(Job.start_time.between(
             start_day, today))
