@@ -79,6 +79,10 @@ var data_{{ d.id }} = {
   ]
 };
 
+{% endfor %}
+
+{% for d in data %}
+
 function runCycle_{{ d.id }}() {
   document.getElementById('label').innerHTML = "{{ d.label }}";
   {% if d.chart_type is equalto "bar" %}
@@ -86,7 +90,7 @@ function runCycle_{{ d.id }}() {
   {% else %}
     drawLineChart(data_{{ d.id }});
   {% endif %}
-  setTimeout(runCycle_{{ last_id }}(), 50000);
+  setTimeout(function() { runCycle_{{ last_id }}(); }, 5000);
 }
 
 {% set last_id = d.id %}
