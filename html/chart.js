@@ -6,16 +6,6 @@ var ctx = document.getElementById("mainDisplay").getContext("2d");
 ctx.canvas.width = window.innerWidth * 0.9;
 ctx.canvas.height = window.innerHeight * 0.85;
 
-{#
-/*
-{% for d in data %}
-// Context("{{ d.id }}")
-var ctx_{{ d.id }} = document.getElementById("{{ d.id }}").getContext("2d");
-ctx_{{ d.id }}.canvas.width = window.innerWidth / 2.5;
-//ctx_{{ d.id }}.canvas.height = 500; //window.innerHeight / 3;
-*/
-#}
-
 {% set last_id = data[-1].id %}
 
 var chart = null;
@@ -102,14 +92,3 @@ Chart.defaults.global.responsive = true;
 function runCycle() {
   runCycle_{{ data[0].id }}();
 }
-
-{#
-/*
-{% if d.chart_type is equalto "bar" %}
-var chart_{{ d.id }} = new Chart(ctx_{{ d.id }}).Bar(data_{{ d.id }});
-{% else %}
-// Defaults to Line
-var chart_{{ d.id }} = new Chart(ctx_{{ d.id }}).Line(data_{{ d.id }});
-{% endif %}
-*/
-#}
