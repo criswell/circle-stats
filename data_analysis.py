@@ -33,7 +33,8 @@ def dateback_from_business_days(from_date, back_days, holidays=[]):
         Returns:
             ( total_days_back, excluded_days ) where
             'total_days_back' : The actual days to go back
-            'excluded_days'   : An array of datetime excluded days
+            'excluded_days'   : An array of excluded days in DataAnalysis
+                                expected format.
     """
     business_days_to_add = back_days
     current_date = from_date
@@ -46,7 +47,7 @@ def dateback_from_business_days(from_date, back_days, holidays=[]):
             excluded_days.append(current_date)
             continue
         elif current_date in holidays:
-            excluded_days.append(current_date)
+            excluded_days.append(current_date.strftime("%Y-%m-%d")
             continue
         else:
             total_days_back += 1
