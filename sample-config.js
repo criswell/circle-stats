@@ -71,10 +71,12 @@
     // Each chart must contain the following:
     //    "label"       : The label of the chart
     //    "data-type"   : The type of analysis this chart contains. Can be one
-    //                    of "average", ...
+    //                    of "average", "top-builds", ...
     //    "chart-type"  : The type of chart to create. Can be one of "bar",
     //                    "line", ...
-    //    "duration:    : The number of days back this chart will contain.
+    //    "duration"    : The number of days back this chart will contain.
+    //    "max-data"    : Max amount of data to return (not valid for all
+    //                    data-types)
     "charts" : [
         {
             "label" : "Seven Day Averages",
@@ -87,6 +89,13 @@
             "data-type" : "average",
             "chart-type" : "line",
             "duration" : 30
+        },
+        {
+            "label" : "Branches with most builds (past 30 days)",
+            "data-type" : "top-builds",
+            "chart-type" : "bar",
+            "duration" : 30,
+            "max-data" : 10
         }
     ]
 }

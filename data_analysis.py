@@ -96,8 +96,8 @@ class DataAnalysis:
         data = Data(hash_id, branch)
         data.data_type = "average"
         data.duration = num_days
-        avg_total = 0
-        num_iter = 0
+        #avg_total = 0
+        #num_iter = 0
         daily_avg_total = {}
         daily_num_iter = {}
         for result in results:
@@ -112,14 +112,58 @@ class DataAnalysis:
                     daily_num_iter[result.start_time] + 1
             daily_avg_total[result.start_time] = \
                     daily_avg_total[result.start_time] + result.build_time
-            avg_total = avg_total + result.build_time
-            num_iter = num_iter + 1
+            #avg_total = avg_total + result.build_time
+            #num_iter = num_iter + 1
 
         for key in daily_avg_total.keys():
             data.data[key] = \
                 (daily_avg_total[key] / daily_num_iter[key]) * MILLI_TO_MINUTES
 
         #data.average = (avg_total / num_iter) * MILLI_TO_MINUTES
+        return data
+
+    def compute_top_builders(self, hash_id, num_days, max_results, outcomes):
+        """Compute the top builders for a given repo
+
+        Parameters:
+            hash_id : The hash id for the repo
+            num_days : The number of days to go back
+            max_results : The maximum number of results to include
+            outcomes : a tuple of the outcomes we're interested in
+
+        Returns:
+            data : A Data object. data.data is an unsorted dictionary of
+                    'num_builds'=>'branch_name'.
+        """
+        running_joke = self._session.query(Job).filter(Job.repo_hash == hash_id)
+        today = datetime.date.today().strftime("%Y-%m-%d")
+        days_delta = datetime.timedelta(days=num_days)
+        start_day = (datetime.date.today() - days_delta).strftime("%Y-%m-%d")
+        running_joke = running_joke.filter(Job.start_time.between(
+            start_day, today))
+        running_joke = running_joke.filter(Job.outcome.in_(outcomes))
+
+        results = running_joke.all()
+        data = Data(hash_id, None)
+        temp_data = {}
+        temp_data_by_count = {}
+
+        for result in results:
+            if result.branch not in temp_data:
+                temp_data[result.branch] = 0
+
+            temp_data[result.branch] += 1
+
+        temp_data_by_count = dict(zip(temp_data.values(), temp_data.keys()))
+        counts = temp_data_by_count.keys()
+        counts.sort()
+
+        if len(counts) < max_results:
+            for k in counts[:max_results]:
+                data.data[k] = temp_data_by_count[k]
+        else:
+            data.data = temp_data_by_count
+
         return data
 
     def pad_missing_days(self, datasets):

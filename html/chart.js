@@ -34,9 +34,13 @@ var data_{{ d.id }} = {
       highlightStroke: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},1)",
       {% endif %}
        data: [
-      {% for item in ds.data|dictsort %}
-        {{ item[1] }},
-      {% endfor %}
+      {% id d.data_type is equalto "top-builds" %}
+        // ere I am JH
+      {% else %}
+        {% for item in ds.data|dictsort %}
+          {{ item[1] }},
+        {% endfor %}
+      {% endif %}
         ]
     },
   {% endfor %}

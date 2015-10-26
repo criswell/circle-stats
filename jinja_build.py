@@ -90,6 +90,17 @@ for repo in config['repos']:
                 "label" : chart['label'],
                 "id" : hashlib.md5(chart['label']).hexdigest(),
                 "chart_type" : chart['chart-type'],
+                "data_type" : chart['data-type'],
+                'data' : d
+                })
+        elif chart['data-type'] == 'top-builds':
+            d.append(da.compute_top_builders(hash_id, num_days, ['success',
+                'timedout', 'failed', 'infrastructure_fail'])
+            data.append({
+                "label" : chart['label'],
+                'id' : hashlib.md5(chart['label']).hexdigest(),
+                "chart_type" : chart['chart-type'],
+                "data_type" : chart['data-type'],
                 'data' : d
                 })
 
