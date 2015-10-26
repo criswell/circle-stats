@@ -41,17 +41,18 @@ def dateback_from_business_days(from_date, back_days, holidays=[]):
     total_days_back = 0
     excluded_days = []
     while business_days_to_add > 0:
-        current_date += datetime.timedelta(days=1)
+        current_date += datetime.timedelta(days=-1)
         weekday = current_date.weekday()
         if weekday >= 5: # sunday = 6
             excluded_days.append(current_date)
             continue
         elif current_date in holidays:
-            excluded_days.append(current_date.strftime("%Y-%m-%d")
+            excluded_days.append(current_date.strftime("%Y-%m-%d"))
             continue
         else:
             total_days_back += 1
         business_days_to_add -= 1
+    print excluded_days
     return (total_days_back, excluded_days)
 
 class DataAnalysis:
@@ -101,6 +102,8 @@ class DataAnalysis:
         daily_avg_total = {}
         daily_num_iter = {}
         for result in results:
+            if result.start_time in excluded_days:
+                continue
             if not daily_avg_total.has_key(result.start_time):
                 daily_avg_total[result.start_time] = 0
             if not daily_num_iter.has_key(result.start_time):
