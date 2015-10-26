@@ -52,7 +52,6 @@ def dateback_from_business_days(from_date, back_days, holidays=[]):
         else:
             total_days_back += 1
         business_days_to_add -= 1
-    print excluded_days
     return (total_days_back, excluded_days)
 
 class DataAnalysis:
