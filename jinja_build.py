@@ -76,7 +76,7 @@ for repo in config['repos']:
         num_days = chart['duration']
         d = []
 
-        if chart['chart-type'] == 'average':
+        if chart['data-type'] == 'average':
             # Compute averages
             for branch in repo['highlight-branches']:
                 d.append(da.compute_averages(hash_id, num_days, ['success'],
