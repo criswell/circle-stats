@@ -76,16 +76,17 @@ for repo in config['repos']:
         num_days = chart['duration']
         d = []
 
-        # Compute averages
-        d.append(da.compute_averages(hash_id, num_days, ['success'], None,
-            weekdays_only))
+        if chart['chart-type'] == 'average':
+            # Compute averages
+            for branch in repo['highlight-branches']:
+                d.append(da.compute_averages(hash_id, num_days, ['success'],
+                    branch, weekdays_only))
 
-        for branch in repo['highlight-branches']:
-            d.append(da.compute_averages(hash_id, num_days, ['success'],
-                branch, weekdays_only))
+            d.append(da.compute_averages(hash_id, num_days, ['success'], None,
+                weekdays_only))
 
-        d = da.pad_missing_days(d)
-        data.append({
+            d = da.pad_missing_days(d)
+            data.append({
                 "label" : chart['label'],
                 "id" : hashlib.md5(chart['label']).hexdigest(),
                 "chart_type" : chart['chart-type'],
