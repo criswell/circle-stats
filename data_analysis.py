@@ -17,20 +17,41 @@ class Data:
         self.data_type = None
         self.duration = None
 
+def dateback_from_business_days(from_date, back_days, holidays=[]):
+    """Determine the number of days to go back if we exclude weekends.
 
+        Given the desired number of days to go back, 'back_days', the date to
+        start from, 'from_date', and an optional list of holidays, compute and
+        return the *actual* days to go back and an array of excluded days, if
+        we exclude weekends and holidays.
 
-def date__business_days(from_date, add_days,holidays):
-    business_days_to_add = add_days
+        Params:
+            'from_date' : The date to start from.
+            'back_days' : The total, non-weekend, non-holiday, days to go back
+            'holidays'  : Optional array containing datetime days of holidays
+
+        Returns:
+            ( total_days_back, excluded_days ) where
+            'total_days_back' : The actual days to go back
+            'excluded_days'   : An array of datetime excluded days
+    """
+    business_days_to_add = back_days
     current_date = from_date
+    total_days_back = 0
+    excluded_days = []
     while business_days_to_add > 0:
         current_date += datetime.timedelta(days=1)
         weekday = current_date.weekday()
         if weekday >= 5: # sunday = 6
+            excluded_days.append(current_date)
             continue
-        if current_date in holidays:
+        elif current_date in holidays:
+            excluded_days.append(current_date)
             continue
+        else:
+            total_days_back += 1
         business_days_to_add -= 1
-    return current_date
+    return (total_days_back, excluded_days)
 
 class DataAnalysis:
     def __init__(self, db_url):
