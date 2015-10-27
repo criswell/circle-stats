@@ -7,6 +7,8 @@ The generated files are HTML and can be viewed in a browser. The default
 templates display each chart full-window, and cycle from one chart to the next.
 If you'd like something else, create your own template files.
 
+You can see a sample output here https://output.jsbin.com/qemolutewe
+
 ## Installation
 
 The scripts require the following things:
