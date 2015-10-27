@@ -71,7 +71,7 @@
     // Each chart must contain the following:
     //    "label"       : The label of the chart
     //    "data-type"   : The type of analysis this chart contains. Can be one
-    //                    of "average", "top-builds", ...
+    //                    of "average", "top-builds", "top-failures", ...
     //    "chart-type"  : The type of chart to create. Can be one of "bar",
     //                    "line", ...
     //    "duration"    : The number of days back this chart will contain.
@@ -96,6 +96,14 @@
             "chart-type" : "bar",
             "duration" : 30,
             "max-data" : 10
+        },
+        {
+            "label" : "Branches with most failures (past 30 days)",
+            "data-type" : "top-failures",
+            "chart-type" : "bar",
+            "duration" : 30,
+            "max-data" : 10
         }
+
     ]
 }

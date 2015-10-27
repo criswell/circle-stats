@@ -104,6 +104,19 @@ for repo in config['repos']:
                 "data_type" : chart['data-type'],
                 'data' : d
                 })
+        elif chart['data-type'] == 'top-failures':
+            d.append(da.compute_top_builders(hash_id, num_days,
+                chart['max-data'], ['failed', 'timedout',
+                    'infrastructure_fail']))
+            data.append({
+                "label" : chart['label'],
+                'id' : hashlib.md5(chart['label']).hexdigest(),
+                "chart_type" : chart['chart-type'],
+                # Here, we use top-builds again because the data is displayed
+                # identically
+                "data_type" : 'top-builds',
+                'data' : d
+                })
 
     colors = repo.get('colors', { "" : [ 220, 220, 220 ] })
     template = env.from_string(strTemplate)

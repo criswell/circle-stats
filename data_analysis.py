@@ -103,8 +103,6 @@ class DataAnalysis:
         data = Data(hash_id, branch)
         data.data_type = "average"
         data.duration = num_days
-        #avg_total = 0
-        #num_iter = 0
         daily_avg_total = {}
         daily_num_iter = {}
         for result in results:
@@ -119,14 +117,11 @@ class DataAnalysis:
                     daily_num_iter[result.start_time] + 1
             daily_avg_total[result.start_time] = \
                     daily_avg_total[result.start_time] + result.build_time
-            #avg_total = avg_total + result.build_time
-            #num_iter = num_iter + 1
 
         for key in daily_avg_total.keys():
             data.data[key] = \
                 (daily_avg_total[key] / daily_num_iter[key]) * MILLI_TO_MINUTES
 
-        #data.average = (avg_total / num_iter) * MILLI_TO_MINUTES
         return data
 
     def compute_top_builders(self, hash_id, num_days, max_results, outcomes):
