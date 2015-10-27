@@ -7,9 +7,7 @@ The generated files are HTML and can be viewed in a browser. The default
 templates display each chart full-window, and cycle from one chart to the next.
 If you'd like something else, create your own template files.
 
-You can see a sample output here https://output.jsbin.com/qemolutewe :
-
-<a class="jsbin-embed" href="https://jsbin.com/qemolutewe/embed">Foo Bar 2015-10-27 13:38:14.801763 on jsbin.com</a><script src="https://static.jsbin.com/js/embed.min.js?3.35.2"></script>
+You can see a sample output here https://output.jsbin.com/qemolutewe
 
 ## Installation
 
