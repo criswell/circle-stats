@@ -17,6 +17,13 @@ class Data:
         self.data_type = None
         self.duration = None
 
+def truncate_branch(branch, max_len=15):
+    """Given a branch name, truncate it if it's too long"""
+    if len(branch) > max_len:
+        return "{0}...".format(branch[:max_len])
+    else:
+        return branch
+
 def dateback_from_business_days(from_date, back_days, holidays=[]):
     """Determine the number of days to go back if we exclude weekends.
 
@@ -149,10 +156,11 @@ class DataAnalysis:
         temp_data_by_count = {}
 
         for result in results:
-            if result.branch not in temp_data:
-                temp_data[result.branch] = 0
+            branch = truncate_branch(result.branch)
+            if branch not in temp_data:
+                temp_data[branch] = 0
 
-            temp_data[result.branch] += 1
+            temp_data[branch] += 1
 
         temp_data_by_count = dict(zip(temp_data.values(), temp_data.keys()))
         counts = temp_data_by_count.keys()
