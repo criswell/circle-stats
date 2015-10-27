@@ -6,22 +6,40 @@ var ctx = document.getElementById("mainDisplay").getContext("2d");
 ctx.canvas.width = window.innerWidth * 0.9;
 ctx.canvas.height = window.innerHeight * 0.85;
 
+{% raw %}
+var legendTemplate = "<ul><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].strokeColor%>;color:<%=datasets[i].strokeColor%>\">O</span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>";
+{% endraw %}
+
 {% set last_id = data[-1].id %}
 
 var chart = null;
 
-function drawLineChart(data){
-    if(chart!=null){
-        chart.destroy();
-    }
-    chart = new Chart(ctx).Line(data, {animateScale: true});
+function displayLegend(chart) {
+  document.getElementById('legend').innerHTML = chart.generateLegend();
 }
 
-function drawBarChart(data){
+function drawLineChart(data) {
     if(chart!=null){
         chart.destroy();
     }
-    chart = new Chart(ctx).Bar(data, {animateScale: true});
+    chart = new Chart(ctx).Line(data, {
+      animateScale: true,
+      scaleGridLineColor : "rgba(201,212,212,.1)",
+      legendTemplate : legendTemplate,
+    });
+    displayLegend(chart);
+}
+
+function drawBarChart(data) {
+    if(chart!=null){
+        chart.destroy();
+    }
+    chart = new Chart(ctx).Bar(data, {
+      animateScale: true,
+      scaleGridLineColor : "rgba(201,212,212,.1)",
+      legendTemplate : legendTemplate
+    });
+    displayLegend(chart);
 }
 
 {% for d in data %}
@@ -106,6 +124,7 @@ function runCycle_{{ d.id }}() {
 {% endfor %}
 
 Chart.defaults.global.responsive = true;
+Chart.defaults.global.scaleLineColor = "rgba(208,242,242,.1)"
 
 function runCycle() {
   runCycle_{{ data[0].id }}();
