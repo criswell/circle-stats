@@ -28,13 +28,15 @@ function drawBarChart(data){
 
 var data_{{ d.id }} = {
   labels: [
-  {% for item in d.data[0].data|dictsort %}
-    {% if d.data_type is equalto 'top-builds' %}
+  {% if d.data_type is equalto 'top-builds' %}
+    {% for item in d.data[0].data|dictsort|reverse %}
       "{{ item[1] }}",
-    {% else %}
+    {% endfor %}
+  {% else %}
+    {% for item in d.data[0].data|dictsort %}
       "{{ item[0] }}",
-    {% endif %}
-  {% endfor %}
+    {% endfor %}
+  {% endif %}
     ],
   datasets: [
   {% for ds in d.data %}
@@ -56,13 +58,15 @@ var data_{{ d.id }} = {
       highlightStroke: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},1)",
       {% endif %}
        data: [
-      {% for item in ds.data|dictsort %}
-        {% if d.data_type is equalto "top-builds" %}
+      {% if d.data_type is equalto "top-builds" %}
+        {% for item in ds.data|dictsort|reverse %}
           {{ item[0] }},
-        {% else %}
+        {% endfor %}
+      {% else %}
+        {% for item in ds.data|dictsort %}
           {{ item[1] }},
-        {% endif %}
-      {% endfor %}
+        {% endfor %}
+      {% endif %}
         ]
     },
   {% endfor %}
