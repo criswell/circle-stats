@@ -77,6 +77,8 @@
     //    "duration"    : The number of days back this chart will contain.
     //    "max-data"    : Max amount of data to return (not valid for all
     //                    data-types)
+    //    "colors"      : Optional array detailing special colors for this
+    //                    chart. Of the same format as "colors" above.
     "charts" : [
         {
             "label" : "Seven Day Averages",
@@ -102,7 +104,12 @@
             "data-type" : "top-failures",
             "chart-type" : "bar",
             "duration" : 30,
-            "max-data" : 10
+            "max-data" : 10,
+            "colors" : {
+                "" : [ 214, 103, 103 ],
+                "master" : [ 214, 152, 152 ]
+
+            }
         }
 
     ]

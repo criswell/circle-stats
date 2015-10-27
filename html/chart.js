@@ -46,6 +46,7 @@ var data_{{ d.id }} = {
       {% else %}
       label: "{{ ds.branch }}",
       {% endif %}
+      {% if d.colors is none %}
       {% if colors[ds.branch] %}
       fillColor: "rgba({{ colors[ds.branch][0] }},{{ colors[ds.branch][1] }},{{ colors[ds.branch][2] }},0.5)",
       strokeColor: "rgba({{ colors[ds.branch][0] }},{{ colors[ds.branch][1] }},{{ colors[ds.branch][2] }},0.8)",
@@ -56,6 +57,19 @@ var data_{{ d.id }} = {
       strokeColor: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},0.8)",
       highlightFill: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},0.75)",
       highlightStroke: "rgba({{ colors[""][0] }},{{ colors[""][1] }},{{ colors[""][2] }},1)",
+      {% endif %}
+      {% else %}
+      {% if d.colors[ds.branch] %}
+      fillColor: "rgba({{ d.colors[ds.branch][0] }},{{ d.colors[ds.branch][1] }},{{ d.colors[ds.branch][2] }},0.5)",
+      strokeColor: "rgba({{ d.colors[ds.branch][0] }},{{ d.colors[ds.branch][1] }},{{ d.colors[ds.branch][2] }},0.8)",
+      highlightFill: "rgba({{ d.colors[ds.branch][0] }},{{ d.colors[ds.branch][1] }},{{ d.colors[ds.branch][2] }},0.75)",
+      highlightStroke: "rgba({{ d.colors[ds.branch][0] }},{{ d.colors[ds.branch][1] }},{{ d.colors[ds.branch][2] }},1)",
+      {% else %}
+      fillColor: "rgba({{ d.colors[""][0] }},{{ d.colors[""][1] }},{{ d.colors[""][2] }},0.5)",
+      strokeColor: "rgba({{ d.colors[""][0] }},{{ d.colors[""][1] }},{{ d.colors[""][2] }},0.8)",
+      highlightFill: "rgba({{ d.colors[""][0] }},{{ d.colors[""][1] }},{{ d.colors[""][2] }},0.75)",
+      highlightStroke: "rgba({{ d.colors[""][0] }},{{ d.colors[""][1] }},{{ d.colors[""][2] }},1)",
+      {% endif %}
       {% endif %}
        data: [
       {% if d.data_type is equalto "top-builds" %}

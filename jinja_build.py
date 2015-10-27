@@ -61,7 +61,6 @@ if not config.has_key('database-url'):
     print(config)
     sys.exit(1)
 
-#num_days = config.get('max-days', 30) # Default to 30 past days
 weekdays_only = config.get('weekdays-only', True)
 
 da = DataAnalysis(config['database-url'])
@@ -91,7 +90,8 @@ for repo in config['repos']:
                 "id" : hashlib.md5(chart['label']).hexdigest(),
                 "chart_type" : chart['chart-type'],
                 "data_type" : chart['data-type'],
-                'data' : d
+                'data' : d,
+                "colors" : chart.get('colors', None)
                 })
         elif chart['data-type'] == 'top-builds':
             d.append(da.compute_top_builders(hash_id, num_days,
@@ -102,7 +102,8 @@ for repo in config['repos']:
                 'id' : hashlib.md5(chart['label']).hexdigest(),
                 "chart_type" : chart['chart-type'],
                 "data_type" : chart['data-type'],
-                'data' : d
+                'data' : d,
+                "colors" : chart.get('colors', None)
                 })
         elif chart['data-type'] == 'top-failures':
             d.append(da.compute_top_builders(hash_id, num_days,
@@ -115,12 +116,14 @@ for repo in config['repos']:
                 # Here, we use top-builds again because the data is displayed
                 # identically
                 "data_type" : 'top-builds',
-                'data' : d
+                'data' : d,
+                "colors" : chart.get('colors', None)
                 })
 
     colors = repo.get('colors', { "" : [ 220, 220, 220 ] })
     template = env.from_string(strTemplate)
-    rendered = template.render(page_title=page_title, data=data, colors=colors)
+    rendered = template.render(page_title=page_title, data=data,
+            hash_id=hash_id, colors=colors)
 
     with open('{0}/{1}.html'.format(output_dir, hash_id), 'w') as f:
         f.write(rendered)
