@@ -26,12 +26,15 @@ pip install -r requirements.txt
 pip install --user -r requirements.txt
 ```
 
+Additionally, the current template files require [ChartJS](http://chartjs.org/),
+but they load it dynamically when the page loads.
+
 Once these are installed, then simply execute the scripts in this repository.
 
 # Usage
 
 Setup a config json file. See [sample-config.js](sample-config.js) for an
-example of the configurtion file.
+example of the configuration file.
 
 Init the database:
 
