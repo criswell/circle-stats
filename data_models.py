@@ -21,3 +21,15 @@ class Job(Base):
     def __repr__(self):
         return "<Job(build_number='{0}', branch='{1}', status='{2}', outcome='{3}')>".format(
                 self.build_number, self.branch, self.status, self.outcome)
+
+class Error(Base):
+    """Error statistics"""
+
+    __tablename__ = "errors"
+    id = Column(Integer, primary_key=True)
+    step = Column(String, index=True)
+    count = Column(Integer)
+
+    def __repr__(self):
+        return "<Error(step='{0}', count='{1}')>".format(self.step,
+                self.count)
