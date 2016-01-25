@@ -64,6 +64,18 @@ Once in a while (maybe monthly), run the cull script to clean up old entries:
 ./cull-data.py -v config.json
 ```
 
+Collect error statistics with the error stats tool:
+
+```
+./error-stats.py config.json
+```
+
+View a summary of the error statistics:
+
+```
+./error-summarize.py config.json
+```
+
 ...
 
 Profit
