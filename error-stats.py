@@ -76,6 +76,9 @@ for repo in config['repos']:
 
     hash_id = hashlib.md5(repo['path']).hexdigest()
 
+    # First, drop the table
+    delme = session.query(Error).delete()
+
     q = session.query(Job).filter(Job.repo_hash == hash_id)
     q = q.filter(Job.outcome == 'failed')
     results = q.all()
@@ -88,8 +91,12 @@ for repo in config['repos']:
     log(">--> user: {0}, project: {1}".format(circle_user, circle_project))
     log("=================")
 
+    i = 0
+
     for result in results:
-        log("\tBuild: {0}".format(result.build_number))
+        i = i + 1
+        log("\tBuild: {0}\t\t{1}/{2}".format(result.build_number, i,
+            len(results)))
         api_url = "{0}/project/{1}/{2}/{3}?circle-token={4}".format(
             BASE_API_URL, circle_user, circle_project, result.build_number,
             circle_token)
