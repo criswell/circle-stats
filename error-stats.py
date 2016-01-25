@@ -35,6 +35,7 @@ Session = sessionmaker()
 Session.configure(bind=engine)
 session = Session()
 BASE_API_URL = 'https://circleci.com/api/v1'
+HEADERS = {'Accept' : 'application/json'}
 
 def get_cmd_output(command):
     output = subprocess.Popen(command.split(),
@@ -44,6 +45,26 @@ def get_cmd_output(command):
 def log(line):
     if args.verbose:
         print(line)
+
+def increment_point(step, hash_id):
+    running_joke = session.query(Error).filter(Error.repo_hash == hash_id)
+    running_joke = running_joke.filter(Error.step == step)
+    if running_joke.count() < 1:
+        e = Error(repo_hash=hash_id, step=step, count=1)
+        session.add(e)
+    else:
+        e = running_joke.first()
+        e.count = e.count + 1
+        session.add(e)
+    session.commit()
+
+
+def process_steps(steps, hash_id):
+    for step in steps:
+        step_name = step['name']
+        for action in step['actions']:
+            if action['failed']:
+                increment_point(step_name, hash_id)
 
 for repo in config['repos']:
     if not repo.has_key('path') or not repo.has_key('highlight-branches'):
@@ -62,7 +83,19 @@ for repo in config['repos']:
         repo['path']))
     circle_project = get_cmd_output(
             'git -C {0} config git-circle.project'.format(repo['path']))
+    circle_token = get_cmd_output('git -C {0} config git-circle.token'.format(
+        repo['path']))
     log(">--> user: {0}, project: {1}".format(circle_user, circle_project))
+    log("=================")
 
     for result in results:
-        print(result.build_number)
+        log("\tBuild: {0}".format(result.build_number))
+        api_url = "{0}/project/{1}/{2}/{3}?circle-token={4}".format(
+            BASE_API_URL, circle_user, circle_project, result.build_number,
+            circle_token)
+        r = requests.get(api_url, headers=HEADERS)
+        if r.status_code != 200:
+            log("\t>>> ERROR RETRIEVING THAT BUILD!")
+        else:
+            data = r.json()
+            process_steps(data['steps'], hash_id)
