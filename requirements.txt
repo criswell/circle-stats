@@ -9,3 +9,4 @@ Jinja2
 git-circle
 sqlalchemy
 dateutil
+requests
