@@ -36,4 +36,16 @@ def log(line):
     if args.verbose:
         print(line)
 
+for repo in config['repos']:
+    if not repo.has_key('path') or not repo.has_key('highlight-branches'):
+        print("A repo entry is missing needed keys!")
+        print(repo)
+        sys.exit(1)
 
+    hash_id = hashlib.md5(repo['path']).hexdigest()
+
+    q = session.query(Job).filter(Job.repo_hash == hash_id)
+    q = q.filter(Job.outcome == 'failed')
+    results = q.all()
+    for result in results:
+        print(result.build_number)

@@ -27,6 +27,7 @@ class Error(Base):
 
     __tablename__ = "errors"
     id = Column(Integer, primary_key=True)
+    repo_hash = Column(String, index=True)
     step = Column(String, index=True)
     count = Column(Integer)
 
