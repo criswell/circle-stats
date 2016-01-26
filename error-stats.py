@@ -74,7 +74,10 @@ for repo in config['repos']:
 
     log("> Processing '{0}'".format(repo['path']))
 
-    hash_id = hashlib.md5(repo['path']).hexdigest()
+    if repo.has_key('hash'):
+        hash_id = repo['hash']
+    else:
+        hash_id = hashlib.md5(repo['path']).hexdigest()
 
     # First, drop the table
     delme = session.query(Error).delete()
