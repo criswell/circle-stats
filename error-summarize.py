@@ -37,7 +37,10 @@ for repo in config['repos']:
         print(repo)
         sys.exit(1)
 
-    hash_id = hashlib.md5(repo['path']).hexdigest()
+    if repo.has_key('hash'):
+        hash_id = repo['hash']
+    else:
+        hash_id = hashlib.md5(repo['path']).hexdigest()
     header = "REPO : {0}, HASH: {1}".format(repo['path'], hash_id)
     print("-" * len(header))
     print(header)
