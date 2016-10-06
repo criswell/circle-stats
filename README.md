@@ -47,7 +47,7 @@ Init the database:
 Run the data-collection (probably from cron daily):
 
 ```
-./data-collecy.py config.json
+./data-collect.py config.json
 ```
 
 Run the HTML builder script (probably from cron daily):

@@ -15,3 +15,4 @@ parts
 dist
 work-config.json
 output/
+runme.sh
