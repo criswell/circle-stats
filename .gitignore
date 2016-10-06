@@ -5,6 +5,7 @@
 *.EGG-INFO
 *.pyc
 *.pyo
+*.swp
 bin
 build
 develop-eggs
