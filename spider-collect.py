@@ -12,11 +12,13 @@
 from __future__ import print_function
 #import sys
 import subprocess
-#import datetime
-#import csv
+import datetime
+import time
+import csv
 import json
 import argparse
 import hashlib
+import random
 #from dateutil.parser import parse
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -26,6 +28,9 @@ parser = argparse.ArgumentParser()
 parser.add_argument("config", help="The JSON config file to load.")
 parser.add_argument("-v", "--verbose", help="Run verbosely",
         action="store_true")
+parser.add_argument("-d", help="The number of days back to go." + \
+        " A '0' means to keep going backwards, forever. (Will have to " + \
+        " kill the program for it to stop.)", type=int)
 args = parser.parse_args()
 
 config = {}
@@ -74,10 +79,16 @@ for repo in config['repos']:
         sys.exit(1)
 
     hash_id = hashlib.md5(repo['path']).hexdigest()
-    git_cmd = "git -C {0} circle list-builds -ar -m --date={1}".format(
+    count = 0
+    while count <= args.d or args.d == 0:
+        date_limit = str(datetime.date.today() - \
+                datetime.timedelta(days=count))
+        git_cmd = "git -C {0} circle list-builds -ar -m --date={1}".format(
             repo['path'], date_limit)
-    output = subprocess.Popen(git_cmd.split(),
-            stdout=subprocess.PIPE).communicate()[0].decode('ascii')
-    for row in csv.reader(output.splitlines(), delimiter=','):
-        process_row(hash_id, row)
-
+        log(git_cmd)
+        count = count + 1
+        output = subprocess.Popen(git_cmd.split(),
+                stdout=subprocess.PIPE).communicate()[0].decode('ascii')
+        for row in csv.reader(output.splitlines(), delimiter=','):
+            process_row(hash_id, row)
+        time.sleep(random.randint(1,5))
