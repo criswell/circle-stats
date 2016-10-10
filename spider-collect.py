@@ -10,7 +10,7 @@
 # accomplish this, it places random waits here and there between pulls.
 
 from __future__ import print_function
-#import sys
+import sys
 import subprocess
 import datetime
 import time
@@ -19,7 +19,7 @@ import json
 import argparse
 import hashlib
 import random
-#from dateutil.parser import parse
+from dateutil.parser import parse
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from data_models import Base, Job
