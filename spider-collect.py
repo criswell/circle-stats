@@ -83,6 +83,7 @@ for repo in config['repos']:
     while count <= args.d or args.d == 0:
         date_limit = str(datetime.date.today() - \
                 datetime.timedelta(days=count))
+        print(">>>>>> Day '{0}' : {1}".format(count, date_limit))
         git_cmd = "git -C {0} circle list-builds -ar -m --date={1}".format(
             repo['path'], date_limit)
         log(git_cmd)
