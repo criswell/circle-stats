@@ -6,7 +6,7 @@ from __future__ import print_function
 import argparse
 import hashlib
 import json
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, distinct
 from sqlalchemy.orm import sessionmaker
 from data_models import Base, Job
 
@@ -49,7 +49,6 @@ for repo in config['repos']:
         hash_id = hashlib.md5(repo['path']).hexdigest()
 
     # First, obtain all the possible statuses from the db
-    q = session.query(Job).filter(Job.status.distinct())
-    results = q.all()
+    statuses = list(session.query(distinct(Job.status)).all())
 
-    print(results)
+    print(statuses)
