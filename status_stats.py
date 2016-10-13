@@ -73,6 +73,6 @@ for repo in config['repos']:
             keys = sorted(data)
             count = 1
             for k in keys:
-                print("{0}:{1}".format(count, "*" * data[k]), file=f)
+                print("{0}:{1}".format(k, "*" * data[k]), file=f)
                 count += 1
 
