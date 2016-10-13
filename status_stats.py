@@ -9,6 +9,8 @@ import json
 from sqlalchemy import create_engine, distinct
 from sqlalchemy.orm import sessionmaker
 from data_models import Base, Job
+import plotly.plotly as py
+import plotly.graph_objs as go
 
 parser = argparse.ArgumentParser()
 parser.add_argument("config", help="The JSON config file to load.")
@@ -71,8 +73,14 @@ for repo in config['repos']:
                     data[timestamp] = 1
 
             keys = sorted(data)
+            x = []
+            y = []
             count = 1
             for k in keys:
-                print("{0}:{1}".format(k, "*" * data[k]), file=f)
+                print("{0}:{1}".format(count, "*" * data[k]), file=f)
+                x.append(count)
+                y.append(data[k])
                 count += 1
 
+            plot_data = [go.Scatter(x=x, y=y)]
+            py.iplot(plot_data, filename="{0}.html".format(fname))
