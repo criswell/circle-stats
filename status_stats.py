@@ -61,4 +61,18 @@ for repo in config['repos']:
             print("Total builds: {0}".format(num_builds), file=f)
             print("Total buils with '{0}': {1}".format(s, len(results)),
                     file=f)
+            print("-"*40, file=f)
+            data = {}
+            for r in results:
+                timestamp = r.start_time.strftime("%Y-%m-%d")
+                if timestamp in data:
+                    data[timestamp]++
+                else:
+                    data[timestamp] = 1
+
+            keys = sorted(data)
+            count = 1
+            for k in keys:
+                print("{0}:{1}".format(count, "*" * data[k]), file=f)
+                count++
 
