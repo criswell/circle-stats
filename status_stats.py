@@ -53,7 +53,7 @@ for repo in config['repos']:
     num_builds = session.query(Job).filter(Job.repo_hash == hash_id).count()
 
     for s in statuses:
-        fname = "{0}.{1}.status_log"
+        fname = "{0}.{1}.status_log".format(hash_id, s)
         with open(fname, 'w') as f:
             log(">> Processing status '{0}'".format(s))
             results = session.query(Job).filter(
