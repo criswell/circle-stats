@@ -10,3 +10,4 @@ git-circle
 sqlalchemy
 python-dateutil
 requests
+plotly
