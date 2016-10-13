@@ -34,6 +34,8 @@ session = Session()
 def log(line):
     if args.verbose:
         print(line)
+# First, obtain all the possible statuses from the db
+statuses = [a[0] for a in session.query(distinct(Job.status)).all()]
 
 for repo in config['repos']:
     if not repo.has_key('path'):
@@ -48,7 +50,15 @@ for repo in config['repos']:
     else:
         hash_id = hashlib.md5(repo['path']).hexdigest()
 
-    # First, obtain all the possible statuses from the db
-    statuses = [a[0] for a in session.query(distinct(Job.status)).all()]
+    num_builds = session.query(Job).filter(Job.repo_hash == hash_id).count()
 
-    print(statuses)
+    for s in statuses:
+        fname = "{0}.{1}.status_log"
+        with open(fname, 'w') as f:
+            log(">> Processing status '{0}'".format(s))
+            results = session.query(Job).filter(
+                Job.repo_hash == hash_id).filter(Job.status == s).all()
+            print("Total builds: {0}".format(num_builds), file=f)
+            print("Total buils with '{0}': {1}".format(s, len(results)),
+                    file=f)
+
