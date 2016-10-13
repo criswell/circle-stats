@@ -66,7 +66,7 @@ for repo in config['repos']:
             for r in results:
                 timestamp = r.start_time.strftime("%Y-%m-%d")
                 if timestamp in data:
-                    data[timestamp]++
+                    data[timestamp] += 1
                 else:
                     data[timestamp] = 1
 
@@ -74,5 +74,5 @@ for repo in config['repos']:
             count = 1
             for k in keys:
                 print("{0}:{1}".format(count, "*" * data[k]), file=f)
-                count++
+                count += 1
 
