@@ -84,4 +84,4 @@ for repo in config['repos']:
 
             plot_data = [go.Scatter(x=x, y=y)]
             py.plot(plot_data, filename="{0}.html".format(fname),
-                    sharing="secret")
+                    sharing="secret", auto_open=False)
