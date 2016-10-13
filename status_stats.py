@@ -50,7 +50,6 @@ for repo in config['repos']:
 
     # First, obtain all the possible statuses from the db
     q = session.query(Job).filter(Job.repo_hash == hash_id)
-    q = q.distinct(Job.status)
-    results = q.all()
+    results = q.query.distinct(Job.status)
 
     print(results)
