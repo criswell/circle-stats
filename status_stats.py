@@ -49,7 +49,7 @@ for repo in config['repos']:
         hash_id = hashlib.md5(repo['path']).hexdigest()
 
     # First, obtain all the possible statuses from the db
-    q = session.query(Job).filter(Job.repo_hash == hash_id)
-    results = q.query.distinct(Job.status)
+    q = session.query(Job).filter(Job.status.disticnt())
+    results = q.all()
 
     print(results)
