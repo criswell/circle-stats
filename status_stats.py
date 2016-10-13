@@ -5,6 +5,7 @@
 from __future__ import print_function
 import argparse
 import hashlib
+import json
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from data_models import Base, Job
