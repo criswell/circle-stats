@@ -83,5 +83,5 @@ for repo in config['repos']:
                 count += 1
 
             plot_data = [go.Scatter(x=x, y=y)]
-            py.iplot(plot_data, filename="{0}.html".format(fname),
+            py.plot(plot_data, filename="{0}.html".format(fname),
                     sharing="secret")
