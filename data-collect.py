@@ -88,7 +88,12 @@ def process_build(hash_id, row):
 
 def process_row(hash_id, row):
     if row[0] == 'BUILD':
-        process_build(hash_id, row)
+        if row[12] == '':
+            # We have no start time, so I guess we'll skip
+            log("Skipping the following build:")
+            log(row)
+        else:
+            process_build(hash_id, row)
 
 for repo in config['repos']:
     if not repo.has_key('path') or not repo.has_key('highlight-branches'):
